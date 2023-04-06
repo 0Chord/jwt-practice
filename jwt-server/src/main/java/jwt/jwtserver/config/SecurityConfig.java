@@ -12,8 +12,10 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
 import org.springframework.web.filter.CorsFilter;
 
 import jwt.jwtserver.config.jwt.JwtAuthenticationFilter;
+import jwt.jwtserver.config.jwt.JwtAuthorizationFilter;
 import jwt.jwtserver.filter.MyFilter1;
 import jwt.jwtserver.filter.MyFilter3;
+import jwt.jwtserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -22,20 +24,23 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final CorsFilter corsFilter;
+	private final UserRepository userRepository;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class);
+		// http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class);
 		http.csrf()
 			.disable()
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
-			.addFilter(new JwtAuthenticationFilter(authenticationManager()))//AuthenticationManager
+			.addFilter(corsFilter)
 			.formLogin()
 			.disable()
 			.httpBasic()
 			.disable()
+			.addFilter(new JwtAuthenticationFilter(authenticationManager()))//AuthenticationManager
+			.addFilter(new JwtAuthorizationFilter(authenticationManager(),userRepository))
 			.authorizeRequests()
 			.antMatchers("/api/v1/user/**")
 			.access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")

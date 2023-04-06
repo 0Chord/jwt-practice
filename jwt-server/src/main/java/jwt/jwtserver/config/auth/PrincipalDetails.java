@@ -7,7 +7,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jwt.jwtserver.model.User;
+import lombok.Data;
 
+@Data
 public class PrincipalDetails implements UserDetails {
 
 	private User user;
@@ -20,8 +22,10 @@ public class PrincipalDetails implements UserDetails {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> authorities = new ArrayList<>();
 		user.getRoleList().forEach(r -> {
-			authorities.add(() -> r);
+			authorities.add(() ->
+				r);
 		});
+		System.out.println("authorities = " + authorities);
 		return authorities;
 	}
 

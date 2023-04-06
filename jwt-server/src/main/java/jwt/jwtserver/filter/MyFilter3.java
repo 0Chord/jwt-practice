@@ -18,19 +18,18 @@ public class MyFilter3 implements Filter {
 		ServletException{
 
 		HttpServletRequest req = (HttpServletRequest)request;
-		HttpServletResponse res = (HttpServletResponse)response;
-		res.setCharacterEncoding("UTF-8");
-		if (req.getMethod().equals("POST")) {
-			String headerAuth = req.getHeader("Authorization");
-			System.out.println("headerAuth = " + headerAuth);
-			System.out.println("필터3");
-
-			if(headerAuth.equals("cos")) {
-				chain.doFilter(req, res);
-			}else{
-				PrintWriter out = res.getWriter();
-				out.println("인증안됨");
-			}
-		}
+		// HttpServletResponse res = (HttpServletResponse)response;
+		// if (req.getMethod().equals("POST")) {
+		// 	String headerAuth = req.getHeader("Authorization");
+		// 	System.out.println("headerAuth = " + headerAuth);
+		// 	System.out.println("필터3");
+		//
+		// 	if(headerAuth.equals("cos")) {
+		// 		chain.doFilter(req, res);
+		// 	}else{
+		// 		PrintWriter out = res.getWriter();
+		// 		out.println("인증안됨");
+		// 	}
+		// }
 	}
 }
