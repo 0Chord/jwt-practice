@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -81,10 +82,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			.withClaim("id", principalDetails.getUser().getId())
 			.withClaim("username", principalDetails.getUser().getUsername())
 			.sign(Algorithm.HMAC512("kimchi"));
+		String refreshToken = JWT.create()
+			.withSubject("refreshToken")
+			.withExpiresAt(new Date(System.currentTimeMillis() + (60000 * 60 * 24)))
+			.withClaim("id", principalDetails.getUser().getId())
+			.withClaim("username", principalDetails.getUser().getUsername())
+			.sign(Algorithm.HMAC512("kimchi"));
 		//JWT 생성 후 클라이언트로 JWT 응답
 		//클라이언트에서 요청 시 JWT 토큰을 가지고 요청
 
 		response.addHeader("Authorization", "Bearer " + jwtToken);
+		response.addCookie(new Cookie("refreshToken", refreshToken));
 	}
 }
 
